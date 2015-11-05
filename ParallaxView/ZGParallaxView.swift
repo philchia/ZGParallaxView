@@ -7,21 +7,27 @@
 //
 
 import UIKit
+import Darwin
 import Accelerate
 
 public class ZGParallaxView: UIView {
-	var scrollView: UIScrollView!
-	var contentView: UIView!
-	var blurredImageView: UIImageView!
-	var blurImage: UIImage?
+	private (set) var scrollView: UIScrollView!
+	private (set) var contentView: UIView!
+	private (set) var blurView: UIVisualEffectView!
+	
 	var maxHeight: CGFloat?
 	var minHeight: CGFloat?
-	var stickToHeader: Bool = false
-	
 	var parallaxDeltaFactor: CGFloat = 0.5
-	
-	var maxBlurRadius: CGFloat = 20
-		
+	var maxBlurAlpha: CGFloat = 0.5 {
+		didSet{
+			self.blurView.alpha = self.maxBlurAlpha
+		}
+	}
+	var blurEffect: UIBlurEffectStyle = .Light {
+		didSet{
+			self.blurView.effect = UIBlurEffect(style: self.blurEffect)
+		}
+	}
 	public class func parallaxView(subView: UIView, size: CGSize) -> ZGParallaxView {
 		let parallaxView = ZGParallaxView(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
 		parallaxView.setup(subView)
@@ -36,29 +42,26 @@ public class ZGParallaxView: UIView {
 		self.scrollView.addSubview(self.contentView)
 		self.contentView.autoresizingMask = [.FlexibleRightMargin, .FlexibleLeftMargin, .FlexibleBottomMargin, .FlexibleTopMargin, .FlexibleWidth, .FlexibleHeight]
 		
-		self.blurredImageView = UIImageView(frame: self.contentView.frame)
-		self.blurredImageView.autoresizingMask = self.contentView.autoresizingMask
-		self.blurredImageView.contentMode = .ScaleAspectFill
-		self.blurredImageView.alpha = 0.0
-		self.scrollView.addSubview(self.blurredImageView)
+		let effect = UIBlurEffect(style: self.blurEffect)
+		self.blurView = UIVisualEffectView(effect: effect)
+		self.blurView.frame = self.contentView.frame
+		self.blurView.autoresizingMask = self.contentView.autoresizingMask
+		self.blurView.alpha = self.maxBlurAlpha
+		self.scrollView.addSubview(self.blurView)
 		self.addSubview(self.scrollView)
-		self.refreshBlurImageView()
+		//self.refreshBlurImageView()
 	}
 	
-	private func refreshBlurImageView() {
-		self.blurImage = self.screenshot()
-		let bluredImage = self.blurImage!.applyBlurWithRadius(self.maxBlurRadius, tintColor: UIColor(white: 0.6, alpha: 0.1), saturationDeltaFactor: 1.0, maskImage: nil)
-		self.blurredImageView.image = bluredImage
-	}
+//	private func refreshBlurView() {
+//		
+//	}
 	
 	public 	func scrollViewDidScroll(scrollView: UIScrollView) {
 		let delta = scrollView.contentOffset.y
 		var frame = self.frame
-
 		if delta > 0 {
 			frame.origin.y += delta
 			self.scrollView.frame = frame
-			self.blurredImageView.alpha = 1 / self.frame.size.height * delta * 2
 			self.clipsToBounds = self.minHeight == nil
 		} else if self.maxHeight != nil && (self.frame.size.height - delta) > self.maxHeight! {
 			scrollView.contentOffset.y = -(self.maxHeight! - self.frame.size.height)
@@ -70,12 +73,15 @@ public class ZGParallaxView: UIView {
 			}
 			self.scrollView.frame = frame
 			self.clipsToBounds = false
+			let maxDelta = (self.maxHeight! - self.frame.size.height)
+			let fabsDelta = fabs(delta)
+			self.blurView.alpha = (1 - fabsDelta / maxDelta) * self.maxBlurAlpha
 		}
 	}
 }
 
 extension UIImage {
-	public func applyBlurWithRadius(blurRadius: CGFloat, tintColor: UIColor?, saturationDeltaFactor: CGFloat, maskImage: UIImage? = nil) -> UIImage? {
+	func applyBlurWithRadius(blurRadius: CGFloat, tintColor: UIColor?, saturationDeltaFactor: CGFloat, maskImage: UIImage? = nil) -> UIImage? {
 		// Check pre-conditions.
 		if (size.width < 1 || size.height < 1) {
 			print("*** error: invalid size: \(size.width) x \(size.height). Both dimensions must be >= 1: \(self)")
@@ -228,7 +234,6 @@ extension UIImage {
 
 extension UIView {
 	func screenshot() -> UIImage {
-		print(self.frame.size)
 		UIGraphicsBeginImageContextWithOptions(self.bounds.size, true, 0.0)
 		self.drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
 		let image = UIGraphicsGetImageFromCurrentImageContext();
