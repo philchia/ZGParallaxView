@@ -23,6 +23,12 @@ tableView.tableHeaderView = parallaxView
 ```
 #How it looks
 ******
+![](./screencast.gif)
+#Todo
+******
+* Add category for UITableView, UIWebView, UICollectionView, UIScrollView to make ZGParallaxView easy to use.
+* Improve blur effect
+
 
 #License
 ******

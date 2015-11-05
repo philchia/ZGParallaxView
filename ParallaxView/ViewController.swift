@@ -22,7 +22,7 @@ class ViewController: UIViewController {
 		parallaxView = ZGParallaxView.parallaxView(view, size: CGSizeMake(self.tableView.frame.size.width, 64))
 		parallaxView!.maxHeight = 150
 		parallaxView!.minHeight = 64
-		parallaxView!.maxBlurAlpha = 0.8
+		parallaxView!.maxBlurAlpha = 0.4
 		parallaxView!.blurEffect = .Light
 		tableView.tableHeaderView = parallaxView
 		tableView.showsVerticalScrollIndicator = false
