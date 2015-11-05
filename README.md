@@ -8,7 +8,7 @@ Created by Swift 2.0 on XCode 7.1
 ZGParallaxView requires Xcode 7 or even later, Swift 2.0 or later, target iOS 8.0 and above.
 #How to
 ###Manual
-Drag ZGParallaxView.swift into your project
+Drag ZGParallaxView.swift into your project, in your viewController's viewDidLoad method:
 
 ```swift
 parallaxView = ZGParallaxView.parallaxView(view, size: CGSizeMake(self.tableView.frame.size.width, 164))
@@ -17,6 +17,13 @@ parallaxView!.maxBlurRadius = 2
 parallaxView!.minHeight = 164
 parallaxView!.stickToHeader = true
 tableView.tableHeaderView = parallaxView
+```
+Then in your scrollview's delegate:
+
+```swift
+func scrollViewDidScroll(scrollView: UIScrollView) {
+	parallaxView?.scrollViewDidScroll(scrollView)
+}
 ```
 #How it looks
 ![](./screencast.gif)

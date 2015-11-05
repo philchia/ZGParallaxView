@@ -28,7 +28,7 @@ public class ZGParallaxView: UIView {
 			self.blurView.effect = UIBlurEffect(style: self.blurEffect)
 		}
 	}
-	public class func parallaxView(subView: UIView, size: CGSize) -> ZGParallaxView {
+	public class func parallaxView(withSubView subView: UIView, andSize size: CGSize) -> ZGParallaxView {
 		let parallaxView = ZGParallaxView(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
 		parallaxView.setup(subView)
 		return parallaxView

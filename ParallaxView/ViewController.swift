@@ -19,7 +19,7 @@ class ViewController: UIViewController {
 		var frame = view.frame
 		frame.size =  CGSizeMake(self.tableView.frame.size.width, 64)
 		view.frame = frame
-		parallaxView = ZGParallaxView.parallaxView(view, size: CGSizeMake(self.tableView.frame.size.width, 64))
+		parallaxView = ZGParallaxView.parallaxView(withSubView: view, andSize: CGSizeMake(self.tableView.frame.size.width, 64))
 		parallaxView!.maxHeight = 150
 		parallaxView!.minHeight = 64
 		parallaxView!.maxBlurAlpha = 0.4
