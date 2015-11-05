@@ -16,11 +16,10 @@ class ViewController: UIViewController {
 		self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
 		let view = UIImageView(image: UIImage(named: "1.png"))
 		view.contentMode = .ScaleAspectFill
-		parallaxView = ZGParallaxView.parallaxView(view, size: CGSizeMake(self.tableView.frame.size.width, 164))
-		parallaxView!.maxHeight = 300
+		parallaxView = ZGParallaxView.parallaxView(view, size: CGSizeMake(self.tableView.frame.size.width, 64))
+		parallaxView!.maxHeight = 150
 		parallaxView!.maxBlurRadius = 2
-		parallaxView!.minHeight = 164
-		parallaxView!.stickToHeader = true
+		parallaxView!.minHeight = 64
 		tableView.tableHeaderView = parallaxView
 		// Do any additional setup after loading the view, typically from a nib.
 	}

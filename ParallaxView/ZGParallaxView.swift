@@ -59,7 +59,7 @@ public class ZGParallaxView: UIView {
 			frame.origin.y += delta
 			self.scrollView.frame = frame
 			self.blurredImageView.alpha = 1 / self.frame.size.height * delta * 2
-			self.clipsToBounds = !self.stickToHeader
+			self.clipsToBounds = self.minHeight == nil
 		} else if self.maxHeight != nil && (self.frame.size.height - delta) > self.maxHeight! {
 			scrollView.contentOffset.y = -(self.maxHeight! - self.frame.size.height)
 		} else {
